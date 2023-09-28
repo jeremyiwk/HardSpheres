@@ -3,10 +3,9 @@
 #include <vector>
 #include <Eigen/Dense>
 
-Eigen::VectorXf gen_config(int &N_particles)
+Eigen::VectorXf gen_config(int &N_particles) //, int dimension)
 {
 
-	int dimension = 3;
 	int max_particles = 10;
 
 	if (N_particles > max_particles)
@@ -17,7 +16,7 @@ Eigen::VectorXf gen_config(int &N_particles)
 	}
 
 
-	Eigen::VectorXf vec = Eigen::VectorXf::Random(dimension*N_particles);;
+	Eigen::VectorXf vec = Eigen::VectorXf::Random(dimension*N_particles);
 	
 	return vec;
 }

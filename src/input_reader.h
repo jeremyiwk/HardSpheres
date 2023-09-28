@@ -6,8 +6,8 @@
 
 struct Simulation {
 
-  int dimension = 3;
-  int time_steps = 10;
+  int dimension = 2;
+  int time_steps = 100;
   int particles = 1;
   float particle_radii = 0.001;
   float time_step = 0.01;
