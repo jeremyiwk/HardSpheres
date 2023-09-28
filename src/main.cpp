@@ -12,13 +12,13 @@ struct Simulation {
 
   int dimension = 2;
   int time_steps = 1000;
-  int particles = 50;
-  float particle_radii = 0.1;
-  float time_step = 0.01;
-  float sim_x_min = -1.0;
-  float sim_y_min = -1.0;
-  float sim_x_max = 1.0;
-  float sim_y_max = 1.0;
+  int particles = 250;
+  double particle_radii = 0.05;
+  double time_step = 0.01;
+  double sim_x_min = -1.0;
+  double sim_y_min = -1.0;
+  double sim_x_max = 1.0;
+  double sim_y_max = 1.0;
 };
 
 int main()
@@ -45,8 +45,11 @@ int main()
   Eigen::VectorXd vel_x = Eigen::VectorXd::Random(simulation.particles);
   Eigen::VectorXd pos_y = Eigen::VectorXd::Random(simulation.particles);
   Eigen::VectorXd vel_y = Eigen::VectorXd::Random(simulation.particles);
+
   Eigen::MatrixXd pos_traj_x = Eigen::MatrixXd::Zero(simulation.time_steps, simulation.particles);
   Eigen::MatrixXd pos_traj_y = Eigen::MatrixXd::Zero(simulation.time_steps, simulation.particles);
+  Eigen::MatrixXd vel_traj_x = Eigen::MatrixXd::Zero(simulation.time_steps, simulation.particles);
+  Eigen::MatrixXd vel_traj_y = Eigen::MatrixXd::Zero(simulation.time_steps, simulation.particles);
 
   printf("Running hard sphere simulation for %d steps\n", simulation.time_steps);
 
@@ -55,6 +58,7 @@ int main()
   for (int it=0; it<simulation.time_steps; ++it)
   {
     printf("Step: %d / %d \t Time: %f\n", it, simulation.time_steps, sim_time);
+
     sim_time += simulation.time_step;
 
     pos_x += simulation.time_step*vel_x;
@@ -77,7 +81,7 @@ int main()
 
         r_ij /= dist;
 
-        if (dist <= 2*simulation.particle_radii)
+        if (dist < 2*simulation.particle_radii)
         {
           pos_x(i) += (2*simulation.particle_radii - dist)*r_ij(0)/2;
           pos_y(i) += (2*simulation.particle_radii - dist)*r_ij(1)/2;
@@ -130,8 +134,13 @@ int main()
 
     // Copy coordinates to trajectory vector
 
-    pos_traj_x.row(it) = vel_x;
-    pos_traj_y.row(it) = vel_y;
+    pos_traj_x.row(it) = pos_x;
+    pos_traj_y.row(it) = pos_y;
+
+    vel_traj_x.row(it) = vel_x;
+    vel_traj_y.row(it) = vel_y;
+
+
   }
 
 
@@ -151,6 +160,21 @@ int main()
     filey << pos_traj_y << '\n';
   }
   filey.close();
+
+  std::ofstream filevx("velocity_traj_x.dat");
+  if (filevx.is_open())
+  {
+    printf("Writing simulation result to file\n");
+    filevx << vel_traj_x << '\n';
+  }
+  filevx.close();
+  std::ofstream filevy("velocity_traj_y.dat");
+  if (filevy.is_open())
+  {
+    printf("Writing simulation result to file\n");
+    filevy << vel_traj_y << '\n';
+  }
+  filevy.close();
 
 	return 0;
 }
