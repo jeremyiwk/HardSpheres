@@ -11,10 +11,10 @@
 struct Simulation {
 
   int dimension = 2;
-  int time_steps = 250;
-  int particles = 10;
-  float particle_radii = 0.01;
-  float time_step = 0.1;
+  int time_steps = 10000;
+  int particles = 5;
+  float particle_radii = 0.1;
+  float time_step = 0.001;
   float sim_x_min = -1.0;
   float sim_y_min = -1.0;
   float sim_x_max = 1.0;
@@ -68,6 +68,7 @@ int main()
       {
 
         Eigen::VectorXf r_ij(2);
+        Eigen::VectorXf v_ij(2);
 
         r_ij(0) = pos_x(i) - pos_x(j);
         r_ij(1) = pos_y(i) - pos_y(j);
@@ -76,17 +77,29 @@ int main()
 
         r_ij /= dist;
 
-        if (dist < 2*simulation.particle_radii)
+        if (dist <= 2*simulation.particle_radii)
         {
           pos_x(i) += (2*simulation.particle_radii - dist)*r_ij(0);
           pos_y(i) += (2*simulation.particle_radii - dist)*r_ij(1);
           pos_x(j) -= (2*simulation.particle_radii - dist)*r_ij(0);
           pos_y(j) -= (2*simulation.particle_radii - dist)*r_ij(1);
 
-          vel_x(i) = sqrt(vel_x(j)*vel_x(i) + vel_y(j)*vel_y(i))*r_ij(0);
-          vel_y(i) = sqrt(vel_x(j)*vel_x(i) + vel_y(j)*vel_y(i))*r_ij(1);
-          vel_x(j) = -sqrt(vel_x(i)*vel_x(j) + vel_y(i)*vel_y(j))*r_ij(0);
-          vel_y(j) = -sqrt(vel_x(i)*vel_x(j) + vel_y(i)*vel_y(j))*r_ij(1);
+          r_ij(0) = pos_x(i) - pos_x(j);
+          r_ij(1) = pos_y(i) - pos_y(j);
+
+          v_ij(0) = vel_x(i) - vel_x(j);
+          v_ij(1) = vel_y(i) - vel_y(j);
+
+          float b = r_ij.dot(v_ij);
+
+          dist = sqrt(r_ij.dot(r_ij));
+
+          r_ij /= dist;
+
+          vel_x(i) -= b*r_ij(0)/(2*simulation.particle_radii);
+          vel_y(i) -= b*r_ij(1)/(2*simulation.particle_radii);
+          vel_x(j) += b*r_ij(0)/(2*simulation.particle_radii);
+          vel_y(j) += b*r_ij(1)/(2*simulation.particle_radii);
         }
       }
 
