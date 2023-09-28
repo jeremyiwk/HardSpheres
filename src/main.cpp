@@ -11,10 +11,10 @@
 struct Simulation {
 
   int dimension = 2;
-  int time_steps = 10000;
-  int particles = 25;
-  float particle_radii = 0.05;
-  float time_step = 0.001;
+  int time_steps = 1000;
+  int particles = 50;
+  float particle_radii = 0.1;
+  float time_step = 0.01;
   float sim_x_min = -1.0;
   float sim_y_min = -1.0;
   float sim_x_max = 1.0;
@@ -79,10 +79,10 @@ int main()
 
         if (dist <= 2*simulation.particle_radii)
         {
-          pos_x(i) += (2*simulation.particle_radii - dist)*r_ij(0);
-          pos_y(i) += (2*simulation.particle_radii - dist)*r_ij(1);
-          pos_x(j) -= (2*simulation.particle_radii - dist)*r_ij(0);
-          pos_y(j) -= (2*simulation.particle_radii - dist)*r_ij(1);
+          pos_x(i) += (2*simulation.particle_radii - dist)*r_ij(0)/2;
+          pos_y(i) += (2*simulation.particle_radii - dist)*r_ij(1)/2;
+          pos_x(j) -= (2*simulation.particle_radii - dist)*r_ij(0)/2;
+          pos_y(j) -= (2*simulation.particle_radii - dist)*r_ij(1)/2;
 
           r_ij(0) = pos_x(i) - pos_x(j);
           r_ij(1) = pos_y(i) - pos_y(j);
@@ -130,8 +130,8 @@ int main()
 
     // Copy coordinates to trajectory vector
 
-    pos_traj_x.row(it) = pos_x;
-    pos_traj_y.row(it) = pos_y;
+    pos_traj_x.row(it) = vel_x;
+    pos_traj_y.row(it) = vel_y;
   }
 
 
