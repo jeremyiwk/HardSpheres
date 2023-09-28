@@ -12,8 +12,8 @@ struct Simulation {
 
   int dimension = 2;
   int time_steps = 10000;
-  int particles = 5;
-  float particle_radii = 0.1;
+  int particles = 25;
+  float particle_radii = 0.05;
   float time_step = 0.001;
   float sim_x_min = -1.0;
   float sim_y_min = -1.0;
@@ -41,12 +41,12 @@ int main()
 
   std::string sim_output_name_x = "sim_traj_x.dat";
   std::string sim_output_name_y = "sim_traj_y.dat";
-	Eigen::VectorXf pos_x = Eigen::VectorXf::Random(simulation.particles);
-  Eigen::VectorXf vel_x = Eigen::VectorXf::Random(simulation.particles);
-  Eigen::VectorXf pos_y = Eigen::VectorXf::Random(simulation.particles);
-  Eigen::VectorXf vel_y = Eigen::VectorXf::Random(simulation.particles);
-  Eigen::MatrixXf pos_traj_x = Eigen::MatrixXf::Zero(simulation.time_steps, simulation.particles);
-  Eigen::MatrixXf pos_traj_y = Eigen::MatrixXf::Zero(simulation.time_steps, simulation.particles);
+	Eigen::VectorXd pos_x = Eigen::VectorXd::Random(simulation.particles);
+  Eigen::VectorXd vel_x = Eigen::VectorXd::Random(simulation.particles);
+  Eigen::VectorXd pos_y = Eigen::VectorXd::Random(simulation.particles);
+  Eigen::VectorXd vel_y = Eigen::VectorXd::Random(simulation.particles);
+  Eigen::MatrixXd pos_traj_x = Eigen::MatrixXd::Zero(simulation.time_steps, simulation.particles);
+  Eigen::MatrixXd pos_traj_y = Eigen::MatrixXd::Zero(simulation.time_steps, simulation.particles);
 
   printf("Running hard sphere simulation for %d steps\n", simulation.time_steps);
 
@@ -67,8 +67,8 @@ int main()
       for (int j=i+1; j<simulation.particles; ++j)
       {
 
-        Eigen::VectorXf r_ij(2);
-        Eigen::VectorXf v_ij(2);
+        Eigen::VectorXd r_ij(2);
+        Eigen::VectorXd v_ij(2);
 
         r_ij(0) = pos_x(i) - pos_x(j);
         r_ij(1) = pos_y(i) - pos_y(j);
@@ -90,7 +90,7 @@ int main()
           v_ij(0) = vel_x(i) - vel_x(j);
           v_ij(1) = vel_y(i) - vel_y(j);
 
-          float b = r_ij.dot(v_ij);
+          double b = r_ij.dot(v_ij);
 
           dist = sqrt(r_ij.dot(r_ij));
 
