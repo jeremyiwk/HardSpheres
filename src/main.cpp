@@ -5,21 +5,20 @@
 #include <cmath>
 #include <vector>
 #include <Eigen/Dense>
-#include "integrator.h"
+#include "input_reader.h"
 
+// struct Simulation {
 
-struct Simulation {
-
-  int dimension = 2;
-  int time_steps = 1000;
-  int particles = 250;
-  double particle_radii = 0.05;
-  double time_step = 0.01;
-  double sim_x_min = -1.0;
-  double sim_y_min = -1.0;
-  double sim_x_max = 1.0;
-  double sim_y_max = 1.0;
-};
+//   int dimension = 2;
+//   int time_steps = 200;
+//   int particles = 50;
+//   double particle_radii = 0.05;
+//   double time_step = 0.01;
+//   double sim_x_min = -1.0;
+//   double sim_y_min = -1.0;
+//   double sim_x_max = 1.0;
+//   double sim_y_max = 1.0;
+// };
 
 int main()
 {
@@ -39,8 +38,6 @@ int main()
   printf("sim_x_max      = %f\n",   simulation.sim_x_max );
   printf("sim_y_max      = %f\n",   simulation.sim_y_max );
 
-  std::string sim_output_name_x = "sim_traj_x.dat";
-  std::string sim_output_name_y = "sim_traj_y.dat";
 	Eigen::VectorXd pos_x = Eigen::VectorXd::Random(simulation.particles);
   Eigen::VectorXd vel_x = Eigen::VectorXd::Random(simulation.particles);
   Eigen::VectorXd pos_y = Eigen::VectorXd::Random(simulation.particles);
@@ -50,6 +47,8 @@ int main()
   Eigen::MatrixXd pos_traj_y = Eigen::MatrixXd::Zero(simulation.time_steps, simulation.particles);
   Eigen::MatrixXd vel_traj_x = Eigen::MatrixXd::Zero(simulation.time_steps, simulation.particles);
   Eigen::MatrixXd vel_traj_y = Eigen::MatrixXd::Zero(simulation.time_steps, simulation.particles);
+
+  std::vector<double> pressure;
 
   printf("Running hard sphere simulation for %d steps\n", simulation.time_steps);
 
@@ -111,21 +110,25 @@ int main()
 
       if (pos_x(i) - simulation.particle_radii < simulation.sim_x_min)
       {
+        pressure.push_back(abs(vel_x(i)));
         pos_x(i) = simulation.sim_x_min + simulation.particle_radii;
         vel_x(i) *= -1;
       }
       else if (pos_y(i) - simulation.particle_radii < simulation.sim_y_min)
       {
+        pressure.push_back(abs(vel_y(i)));
         pos_y(i) = simulation.sim_y_min + simulation.particle_radii;
         vel_y(i) *= -1;
       }
       else if (pos_x(i) + simulation.particle_radii > simulation.sim_x_max)
       {
+        pressure.push_back(abs(vel_x(i)));
         pos_x(i) = simulation.sim_x_max - simulation.particle_radii;
         vel_x(i) *= -1;
       }
       else if (pos_y(i) + simulation.particle_radii > simulation.sim_y_max)
       {
+        pressure.push_back(abs(vel_y(i)));
         pos_y(i) = simulation.sim_y_max - simulation.particle_radii;
         vel_y(i) *= -1;
       }
@@ -140,20 +143,18 @@ int main()
     vel_traj_x.row(it) = vel_x;
     vel_traj_y.row(it) = vel_y;
 
-
   }
-
 
   // Write arrays to file
 
-  std::ofstream filex(sim_output_name_x);
+  std::ofstream filex(simulation.pos_output_name_x);
   if (filex.is_open())
   {
     printf("Writing simulation result to file\n");
     filex << pos_traj_x << '\n';
   }
   filex.close();
-  std::ofstream filey(sim_output_name_y);
+  std::ofstream filey(simulation.pos_output_name_y);
   if (filey.is_open())
   {
     printf("Writing simulation result to file\n");
@@ -161,20 +162,30 @@ int main()
   }
   filey.close();
 
-  std::ofstream filevx("velocity_traj_x.dat");
+  std::ofstream filevx(simulation.vel_output_name_x);
   if (filevx.is_open())
   {
     printf("Writing simulation result to file\n");
     filevx << vel_traj_x << '\n';
   }
   filevx.close();
-  std::ofstream filevy("velocity_traj_y.dat");
+  std::ofstream filevy(simulation.vel_output_name_y);
   if (filevy.is_open())
   {
     printf("Writing simulation result to file\n");
     filevy << vel_traj_y << '\n';
   }
   filevy.close();
+
+  std::ofstream filep(simulation.pressure_output_name);
+  if (filep.is_open())
+  {
+    for (const auto& item : pressure)
+    {
+      filep << item << std::endl;
+    }
+  }
+  filep.close();
 
 	return 0;
 }

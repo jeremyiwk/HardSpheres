@@ -1,28 +1,51 @@
 #include <iostream>
 #include <stdio.h>
+#include <fstream>
 #include <map>
 #include <string>
 #include <any>
 
+
+
+// std::map<std::string, std::string> read_input(std::string filename) 
+// {
+//     std::ifstream inputFile(filename);
+//     // if (!inputFile.is_open()) {
+//     //     std::cerr << "Could not open the input file." << std::endl;
+//     //     return 1;
+//     // }
+
+//     std::map<std::string, std::string> inputMap;
+//     std::string key, value;
+
+//     while (inputFile >> key >> value) {
+//         inputMap[key] = value;
+//     }
+
+//     inputFile.close();
+
+//     // Print the contents of the map
+//     for (const auto& entry : inputMap) {
+//         std::cout << "Key: " << entry.first << ", Value: " << entry.second << std::endl;
+//     }
+
+//     return inputMap;
+// }
+
 struct Simulation {
 
   int dimension = 2;
-  int time_steps = 100;
-  int particles = 1;
-  float particle_radii = 0.001;
-  float time_step = 0.01;
-  float sim_box_x = 1.0;
-  float sim_box_y = 1.0;
-  float sim_box_z = 1.0;
+  int time_steps = 5000;
+  int particles = 50;
+  double particle_radii = 0.005;
+  double time_step = 0.01;
+  double sim_x_min = -1.0;
+  double sim_y_min = -1.0;
+  double sim_x_max = 1.0;
+  double sim_y_max = 1.0;
+  std::string pos_output_name_x = "position_traj_x.dat";
+  std::string pos_output_name_y = "position_traj_y.dat";
+  std::string vel_output_name_x = "velocity_traj_x.dat";
+  std::string vel_output_name_y = "velocity_traj_y.dat";
+  std::string pressure_output_name = "pressure.dat";
 };
-
-// std::map<std::string, std::any> sim_params;
-
-
-// sim_params["dimension"]  = 3;
-// sim_params["particles"]  = 11;
-// sim_params["sim_box_x"]  = 1.0;
-// sim_params["sim_box_y"]  = 1.0;
-// sim_params["sim_box_z"]  = 1.0;
-// sim_params["total_time"] = 1.0;
-// sim_params["time_step"]  = 0.01;

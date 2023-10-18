@@ -1,0 +1,2 @@
+particles 10
+time_step 0.1
