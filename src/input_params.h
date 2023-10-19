@@ -9,10 +9,10 @@
 struct Simulation {
 
   int dimension = 2;
-  int time_steps = 1000;
+  int time_steps = 10000;
   int particles = 100;
   double particle_radii = 0.005;
-  double time_step = 0.01;
+  double time_step = 0.001;
   double sim_x_min = -1.0;
   double sim_y_min = -1.0;
   double sim_x_max = 1.0;

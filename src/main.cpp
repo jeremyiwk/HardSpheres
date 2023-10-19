@@ -25,7 +25,7 @@ int main()
 
 
 
-    Eigen::VectorXd particle_radii = Eigen::VectorXd::LinSpaced(100, 0.001, 0.07);
+    Eigen::VectorXd particle_radii = Eigen::VectorXd::LinSpaced(250, 0.001, 0.1);
 
     for (int i; i < particle_radii.rows(); ++i)
     {
