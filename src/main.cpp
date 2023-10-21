@@ -25,7 +25,7 @@ int main()
 
 
 
-    Eigen::VectorXd particle_radii = Eigen::VectorXd::LinSpaced(250, 0.001, 0.1);
+    Eigen::VectorXd particle_radii = Eigen::VectorXd::LinSpaced(100, 1, 100);
 
     for (int i; i < particle_radii.rows(); ++i)
     {
@@ -35,7 +35,7 @@ int main()
 
     	Simulation simulation; // defined in input_params.h
 
-    	simulation.particle_radii = radius;
+    	simulation.particles = (int)particle_radii(i);
 
     	simulation.pos_output_name_x = "position_traj_x_" + std::to_string(i) + ".dat";
   		simulation.pos_output_name_y = "position_traj_y_" + std::to_string(i) + ".dat";
@@ -50,7 +50,7 @@ int main()
 
     }
 
-    std::ofstream filer("radii.dat");
+    std::ofstream filer("number.dat");
     if (filer.is_open())
     {
         filer << particle_radii << '\n';
